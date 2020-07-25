@@ -1,18 +1,15 @@
 #! /usr/bin/python
 '''
                       Crusader Kings II: Statistic Shifter
-                             Verson 1.00.20200725a
-
+                             Version 1.00.20200725b
 This script facilitates editting of court members' statistics in Crusader Kings
 II saved game files.  It has been successfully tested on saved game files for
 version 3.3.3.0 of the game, though this formatting does appear consistent in
 other versions.
-
 This script assumes that you have installed Python 3.8.2 or a compatible
 version on your platform of choice.  To use this script, copy an NPC's
 information between the lines entitled 'att={ ...' and 'wealth={ ...', as
 demonstrated below:
-
 			att={2 2 8 2 2}
 			tr={10 85 77 188 83 }
             rel="hellenic_pagan"
@@ -24,13 +21,11 @@ demonstrated below:
 			title="title_cupbearer"
 			job="job_spymaster"
 			wealth=15.00000
-
 This script will accommodate can accommodate optional fields as well, such as
 titles, jobs, and consort status.  The script manages white space and line
 breaks in the data to ensure consistency with the current structure of the file.
 As this script makes no claims of warranty or guarantee, always keep a back-up
 of your saved game file before you modify it.
-
 Notes:
  - It can update existing statistic fields.  When I get around to it, I intend
  to build logic that adds prestiege, piety, and wealth fields (if they are
@@ -60,7 +55,7 @@ def statShifter():
 	import pyinputplus as pyip
 	import pyperclip
 	introText1 = 'Crusader Kings II: Statistic Shifter'
-	introText2 = 'Verison 1.00.20200725a\n'
+	introText2 = 'Verison 1.00.20200725b\n'
 	print('\n' + introText1.center(80))
 	print(introText2.center(80))
 
@@ -85,12 +80,7 @@ def statShifter():
 			# Check if this current line is a field that we want to adjust.
 			if '\t\t\t' + modifier in line:
 				if modifier == 'att={':
-					print('\n * Current attributes: ' + line)
-					updateAttYN = pyip.inputYesNo(' * Do you want to update these attributes? ')
-					if updateAttYN == 'yes':
-						newStatistics = str(generateRandomAttributes()) + '\n'
-					else:
-						newStatistics = str(line) + '\n'
+					newStatistics = str(generateRandomAttributes()) + '\n'
 				elif modifier == 'fer=':
 					newStatistics += '\t\t\tfer=1.500\n'
 				elif modifier == 'health=':
