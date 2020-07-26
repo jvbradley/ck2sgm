@@ -1,7 +1,7 @@
 #! /usr/bin/python
 '''
                       Crusader Kings II: Statistic Shifter
-                             Version 1.00.20200725b
+                             Version 1.00.20200725c
 This script facilitates editting of court members' statistics in Crusader Kings
 II saved game files.  It has been successfully tested on saved game files for
 version 3.3.3.0 of the game, though this formatting does appear consistent in
@@ -13,6 +13,8 @@ demonstrated below:
 			att={2 2 8 2 2}
 			tr={10 85 77 188 83 }
             rel="hellenic_pagan"
+            secret_religion="taoist"
+            cul="pictish"
 			dnt=1000104328
 			dna="qcilvebuwaj"
 			prp="wcviik00000000000000000000000000000000"
@@ -69,7 +71,7 @@ def statShifter():
 	modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
 
 	# The script will leave these ones alone.
-	skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', 'job="', 'player=', 'player_name="', 'rel=', 'gov=', 'consort=', 'consort_of=']
+	skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', 'job="', 'player=', 'player_name="', 'rel=', 'gov=', 'consort=', 'consort_of=', 'cul=']
 
 	# This question will impact prestiege, piety, and wealth.
 	countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
@@ -101,9 +103,9 @@ def statShifter():
 						errorMessage('badElse')
 				elif modifier == 'wealth=':
 					if countyLordYN == 'yes':
-						newStatistics += '\t\t\twealth=125000.000'
+						newStatistics += '\t\t\twealth=125000.00000'
 					elif countyLordYN == 'no':
-						newStatistics += '\t\t\twealth=400.000'
+						newStatistics += '\t\t\twealth=400.00000'
 					else:
 						errorMessage('badElse')
 			# This ends the logic for field adjustments.
