@@ -49,7 +49,7 @@ def statShifter():
     import pyinputplus as pyip
     import pyperclip
     introText1 = 'Crusader Kings II: Statistic Shifter'
-    introText2 = 'Version 1.01.20200729a\n'
+    introText2 = 'Version 1.01.20200729b\n'
     print('\n' + introText1.center(80))
     print(introText2.center(80))
 
@@ -59,20 +59,30 @@ def statShifter():
     # Make a list of the items from memory.
     attributeInputByLine = attributeInput.split('\n')
 
-    # Check for missing default fields; add if necessary.
-    if '\t\t\tpiety=' not in attributeInputByLine:
-        attributeInputByLine.insert(12, '\t\t\tpiety=15.000\n')
-    if '\t\t\twealth=' not in attributeInputByLine[-1:]:
-        attributeInputByLine.append('\t\t\twealth=15.00000\n')
-
     # These are the statistics that this script will modify.
     modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
 
     # The script will leave these ones alone in this version.
     skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', 'job="', 'player=', 'player_name="', 'rel=', 'gov=', 'consort=', 'consort_of=', 'cul=']
 
-    # This question will impact prestiege, piety, and wealth.
+    # This question will impact prestige, piety, and wealth.
     countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
+
+    # Look for missing attributes; add them with filler values if necessary.
+    attributeLocations = {}
+    for line in range(len(attributeInputByLine)):
+        for modifier in modifyLines:
+            if modifier in attributeInputByLine[line]:
+                attributeLocations[modifier] = line
+            elif modifier not in attributeInputByLine[line]:
+                attributeLocations.setdefault(modifier, False)
+    for attributeKey, attributeValue in attributeLocations.items():
+        if attributeKey == 'prs=' and attributeValue == False:
+            attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000')
+        elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] == False:
+            attributeInputByLine.append('\t\t\tpiety=1.000')
+        elif attributeKey == 'wealth=' and attributeValue == False:
+            attributeInputByLine.append('\t\t\twealth=15.00000\n')
 
     for line in attributeInputByLine:
         # While iterating through the attribute lines, these lines will be
@@ -112,6 +122,7 @@ def statShifter():
 
     # Drop the updated statistics into memory, readying it for pasting.
     pyperclip.copy(newStatistics)
+    # print(newStatistics)
     print(' * Process complete.')
     exit()
 
