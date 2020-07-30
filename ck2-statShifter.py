@@ -49,7 +49,7 @@ def statShifter():
     import pyinputplus as pyip
     import pyperclip
     introText1 = 'Crusader Kings II: Statistic Shifter'
-    introText2 = 'Version 1.01.20200729b\n'
+    introText2 = 'Version 1.01.20200729c\n'
     print('\n' + introText1.center(80))
     print(introText2.center(80))
 
@@ -78,11 +78,14 @@ def statShifter():
                 attributeLocations.setdefault(modifier, False)
     for attributeKey, attributeValue in attributeLocations.items():
         if attributeKey == 'prs=' and attributeValue == False:
-            attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000')
+            attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000\n')
+        elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] != False:
+            attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
         elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] == False:
-            attributeInputByLine.append('\t\t\tpiety=1.000')
+            attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
         elif attributeKey == 'wealth=' and attributeValue == False:
             attributeInputByLine.append('\t\t\twealth=15.00000\n')
+
 
     for line in attributeInputByLine:
         # While iterating through the attribute lines, these lines will be
@@ -122,7 +125,6 @@ def statShifter():
 
     # Drop the updated statistics into memory, readying it for pasting.
     pyperclip.copy(newStatistics)
-    # print(newStatistics)
     print(' * Process complete.')
     exit()
 
