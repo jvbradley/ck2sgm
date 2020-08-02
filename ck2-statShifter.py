@@ -49,7 +49,7 @@ def statShifter():
     import pyinputplus as pyip
     import pyperclip
     introText1 = 'Crusader Kings II: Statistic Shifter'
-    introText2 = 'Version 1.01.20200802a\n'
+    introText2 = 'Version 1.01.20200802b\n'
     print('\n' + introText1.center(80))
     print(introText2.center(80))
 
@@ -69,7 +69,7 @@ def statShifter():
     skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
     'job="', 'player=', 'player_name="', 'rel=', 'secret_religion=', 'gov=', \
     'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
-    '\ttitle=', '\tpressed=yes', '\tweak=yes']
+    '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=']
 
     # This question will impact prestige, piety, and wealth.
     countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
