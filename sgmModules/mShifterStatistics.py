@@ -1,57 +1,19 @@
-#! /usr/bin/python
-'''
-Crusader Kings II: Statistic Shifter
-
-This script facilitates editting of court members' statistics in Crusader Kings
-II saved game files.  It has been successfully tested on saved game files for
-version 3.3.3.0 of the game, though this formatting does appear consistent in
-other versions.
-
-This script assumes that you have installed Python 3.8.2 or a compatible
-version on your platform of choice.  To use this script, copy an NPC's
-information between the lines entitled 'att={ ...' and 'wealth={ ...', as
-demonstrated below:
-
-            att={2 2 8 2 2}
-            tr={10 85 77 188 83 }
-            rel="hellenic_pagan"
-            secret_religion="taoist"
-            cul="pictish"
-            dnt=1000104328
-            dna="qcilvebuwaj"
-            prp="wcviik00000000000000000000000000000000"
-            fer=0.200
-            health=4.000
-            title="title_cupbearer"
-            job="job_spymaster"
-            wealth=15.00000
-
-This script will accommodate can accommodate optional fields as well, such as
-titles, jobs, and consort status.  The script manages white space and line
-breaks in the data to ensure consistency with the current structure of the file.
-As this script makes no claims of warranty or guarantee, ALWAYS MAKE A BACK-UP
-OF YOUR SAVED GAMNE FILE BEFORE YOU MODIFY IT.
-'''
 def generateRandomAttributes():
     # This function generates a set of five randomly generated attribute values
-    # between the values of 14 and 24 and then returns the data.  You can
-    # adjust the values 14 and 24.
+    # between the values of 13 and 24 and then returns the data.  You can
+    # adjust the values 13 and 24.
     import random
     attOutput = '\t\t\tatt={'
     for i in range(5):
-        attOutput += str(round(random.uniform(14,24))) + ' '
+        attOutput += str(round(random.uniform(13,24))) + ' '
         i += 1
 
     attOutput = attOutput[0:-1] + '}'
     return attOutput
 
-def statShifter():
+def shiftCharacterStatistics(shiftReligionYN, newCharacterReligion):
     import pyinputplus as pyip
     import pyperclip
-    introText1 = 'Crusader Kings II: Statistic Shifter'
-    introText2 = 'Version 1.01.20200807a\n'
-    print('\n' + introText1.center(80))
-    print(introText2.center(80))
 
     # Grab the attributes from memory.
     attributeInput = pyperclip.paste()
@@ -59,22 +21,33 @@ def statShifter():
     # Make a list of the items from memory.
     attributeInputByLine = attributeInput.split('\n')
 
+    # This question will impact prestige, piety, and wealth.
+    countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
+
     # These are the statistics that this script will modify.
     modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
 
-    # The script will leave these ones alone in this version.
+    # Ask the user if a specific religion needs to be set for this character.
+    if shiftReligionYN == 'no':
+        # The script will leave these fields alone.
+        skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
+        'job="', 'player=', 'player_name="', 'rel=', 'secret_religion=', 'gov=', \
+        'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
+        '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
+        'is_custom=yes', 'is_dynamic=yes', 'base_title=']
+    # skipLines issue: \ttitle= may create duplicate entries under the claims
+    # section.
+    elif shiftReligionYN == 'yes':
     skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
-    'job="', 'player=', 'player_name="', 'rel=', 'secret_religion=', 'gov=', \
+    'job="', 'player=', 'player_name="', 'secret_religion=', 'gov=', \
     'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
     '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
     'is_custom=yes', 'is_dynamic=yes', 'base_title=']
     # skipLines issue: \ttitle= may create duplicate entries under the claims
     # section.
-
-    # This question will impact prestige, piety, and wealth.
-    countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
-
+        modifyLines.append('rel=')
     # Look for missing attributes; add them with filler values if necessary.
+
     attributeLocations = {}
     for line in range(len(attributeInputByLine)):
         for modifier in modifyLines:
@@ -83,7 +56,9 @@ def statShifter():
             elif modifier not in attributeInputByLine[line]:
                 attributeLocations.setdefault(modifier, False)
     for attributeKey, attributeValue in attributeLocations.items():
-        if attributeKey == 'prs=' and attributeValue == False:
+        if attributeKey == 'rel=' and attributeValue == False:
+            attributeInputByLine.insert(attributeLocations['tr='] + 1, '\t\t\trel="' + newCharacterReligion + '"\n')
+        elif attributeKey == 'prs=' and attributeValue == False:
             attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000\n')
         elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] != False:
             attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
@@ -91,7 +66,6 @@ def statShifter():
             attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
         elif attributeKey == 'wealth=' and attributeValue == False:
             attributeInputByLine.append('\t\t\twealth=15.00000\n')
-
 
     for line in attributeInputByLine:
         # While iterating through the attribute lines, these lines will be
@@ -107,6 +81,8 @@ def statShifter():
             if '\t\t\t' + modifier in line:
                 if modifier == 'att={':
                     newStatistics = str(generateRandomAttributes()) + '\n'
+                elif modifier == 'rel=':
+                    newStatistics += '\t\t\t' + newCharacterReligion + '\n'
                 elif modifier == 'fer=':
                     newStatistics += '\t\t\tfer=1.500\n'
                 elif modifier == 'health=':
@@ -130,8 +106,4 @@ def statShifter():
     # End iteration of statistics.
 
     # Drop the updated statistics into memory, readying it for pasting.
-    pyperclip.copy(newStatistics)
-    print(' * Process complete.')
-    exit()
-
-statShifter()
+    return newStatistics
