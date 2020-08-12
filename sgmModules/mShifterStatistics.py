@@ -11,9 +11,37 @@ def generateRandomAttributes():
     attOutput = attOutput[0:-1] + '}'
     return attOutput
 
-def shiftCharacterStatistics(shiftReligionYN, newCharacterReligion):
+def setModificationScope(selectedReligion):
+    # These are the statistics that this script will modify.
+    modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
+
+    if selectedReligion == 'noChange':
+        # The script will leave these ones alone in this version.
+        skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
+        'job="', 'player=', 'player_name="', 'rel=', 'secret_religion=', \
+        'gov=', 'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', \
+        '}', '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
+        'is_custom=yes', 'is_dynamic=yes', 'base_title=']
+    elif selectedReligion != 'noChange':
+        modifyLines.append('rel=')
+        skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
+        'job="', 'player=', 'player_name="', 'secret_religion=', 'gov=', \
+        'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
+        '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
+        'is_custom=yes', 'is_dynamic=yes', 'base_title=']
+
+    return [modifyLines, skipLines]
+
+def shiftCharacterStatistics(selectedReligion):
     import pyinputplus as pyip
     import pyperclip
+    newStatistics = str()
+    modificationScope = setModificationScope(selectedReligion)
+    modifyLines = modificationScope[0]
+    skipLines = modificationScope[1]
+
+    # This question will impact prestige, piety, and wealth.
+    countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
 
     # Grab the attributes from memory.
     attributeInput = pyperclip.paste()
@@ -21,33 +49,7 @@ def shiftCharacterStatistics(shiftReligionYN, newCharacterReligion):
     # Make a list of the items from memory.
     attributeInputByLine = attributeInput.split('\n')
 
-    # This question will impact prestige, piety, and wealth.
-    countyLordYN = pyip.inputYesNo(' * Is this character managing a county? ')
-
-    # These are the statistics that this script will modify.
-    modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
-
-    # Ask the user if a specific religion needs to be set for this character.
-    if shiftReligionYN == 'no':
-        # The script will leave these fields alone.
-        skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
-        'job="', 'player=', 'player_name="', 'rel=', 'secret_religion=', 'gov=', \
-        'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
-        '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
-        'is_custom=yes', 'is_dynamic=yes', 'base_title=']
-    # skipLines issue: \ttitle= may create duplicate entries under the claims
-    # section.
-    elif shiftReligionYN == 'yes':
-    skipLines = ['tr={', 'dnt=', 'dna="', 'prp="', 'lover=', 'title="', \
-    'job="', 'player=', 'player_name="', 'secret_religion=', 'gov=', \
-    'consort=', 'consort_of=', 'cul=', 'bstd=', 'claim=', '{', '}', \
-    '\ttitle=', '\tpressed=yes', '\tweak=yes', 'g_cul=', 'ascul=', \
-    'is_custom=yes', 'is_dynamic=yes', 'base_title=']
-    # skipLines issue: \ttitle= may create duplicate entries under the claims
-    # section.
-        modifyLines.append('rel=')
     # Look for missing attributes; add them with filler values if necessary.
-
     attributeLocations = {}
     for line in range(len(attributeInputByLine)):
         for modifier in modifyLines:
@@ -56,9 +58,7 @@ def shiftCharacterStatistics(shiftReligionYN, newCharacterReligion):
             elif modifier not in attributeInputByLine[line]:
                 attributeLocations.setdefault(modifier, False)
     for attributeKey, attributeValue in attributeLocations.items():
-        if attributeKey == 'rel=' and attributeValue == False:
-            attributeInputByLine.insert(attributeLocations['tr='] + 1, '\t\t\trel="' + newCharacterReligion + '"\n')
-        elif attributeKey == 'prs=' and attributeValue == False:
+        if attributeKey == 'prs=' and attributeValue == False:
             attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000\n')
         elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] != False:
             attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
@@ -82,7 +82,7 @@ def shiftCharacterStatistics(shiftReligionYN, newCharacterReligion):
                 if modifier == 'att={':
                     newStatistics = str(generateRandomAttributes()) + '\n'
                 elif modifier == 'rel=':
-                    newStatistics += '\t\t\t' + newCharacterReligion + '\n'
+                    newStatistics += '\t\t\trel="' + selectedReligion + '"\n'
                 elif modifier == 'fer=':
                     newStatistics += '\t\t\tfer=1.500\n'
                 elif modifier == 'health=':

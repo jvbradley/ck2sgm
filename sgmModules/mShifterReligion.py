@@ -9,12 +9,11 @@ def shiftCharacterReligion():
     It'll look pretty in a future version, I'm sure.
     '''
     import pyinputplus as pyip
-    import six
 
     ck2Religions = {\
     'judaism': [\
         ['jewish', 'samaritan', 'karaite']], \
-    'eastern': [\
+    'indian': [\
         ['hindu', 'buddhist', 'jain', 'taoist']], \
     'mazdan': [\
         ['zoroastrian', 'khurmazta', 'mazdaki', 'manichean']], \
@@ -51,7 +50,8 @@ def shiftCharacterReligion():
     menuReligionOptions = []
     for religionGroup in ck2Religions[selectedReligionFamily]:
         for religionIndex in range(len(religionGroup)):
-            if religionIndex == 0 and selectedReligionFamily != 'eastern' and selectedReligionFamily != 'pagan':
+            if religionIndex == 0 and selectedReligionFamily != 'indian' \
+            and selectedReligionFamily != 'pagan':
                 menuReligionOptions.append(religionGroup[religionIndex] + ' *')
             else:
                 menuReligionOptions.append(religionGroup[religionIndex])

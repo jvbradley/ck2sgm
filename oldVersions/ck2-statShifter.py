@@ -1,17 +1,14 @@
 #! /usr/bin/python
 '''
 Crusader Kings II: Statistic Shifter
-
 This script facilitates editting of court members' statistics in Crusader Kings
 II saved game files.  It has been successfully tested on saved game files for
 version 3.3.3.0 of the game, though this formatting does appear consistent in
 other versions.
-
 This script assumes that you have installed Python 3.8.2 or a compatible
 version on your platform of choice.  To use this script, copy an NPC's
 information between the lines entitled 'att={ ...' and 'wealth={ ...', as
 demonstrated below:
-
             att={2 2 8 2 2}
             tr={10 85 77 188 83 }
             rel="hellenic_pagan"
@@ -25,7 +22,6 @@ demonstrated below:
             title="title_cupbearer"
             job="job_spymaster"
             wealth=15.00000
-
 This script will accommodate can accommodate optional fields as well, such as
 titles, jobs, and consort status.  The script manages white space and line
 breaks in the data to ensure consistency with the current structure of the file.

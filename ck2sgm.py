@@ -1,25 +1,34 @@
 #! python3
 # Crusader Kings II: Saved Game Modifier
-def sgmMainMenu(shiftReligionYN, newCharacterReligion):
+def sgmMainMenu(selectedReligion):
+    from sgmModules import mAboutSGM as aboutManager
     # This is a work in progress.  The aim of this script is to incorporate
     # religions under the logic of adjusting character statistics.
     from sgmModules import mShifterStatistics as statisticShifter
+    from sgmModules import mShifterReligion as religionShifter
     import pyinputplus as pyip
     import pyperclip
 
-    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 1.20200806a']
-    sgmInfo.append('Session religion shift: ' + str(shiftReligionYN) + '\n')
     print('\n')
+    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812a']
     for info in sgmInfo:
         print(info.center(80))
 
-    menuList = ['Update Another Character', 'Exit']
+    if selectedReligion == 'noChange':
+        menuList = ['Character: Update Statistics', 'Queue New Religion', 'About This Program / Help', 'Exit']
+    else:
+        menuList = ['Character: Update Statistics', 'Queue New Religion (Current: ' + selectedReligion + ')', 'About This Program / Help', 'Exit']
+    print('\n')
     selectedMenuOption = pyip.inputMenu(menuList, numbered = True, lettered = False)
     if selectedMenuOption == 'Exit':
         print('Goodbye.')
         exit()
-    elif selectedMenuOption == 'Update Another Character':
-        newStatistics = statisticShifter.shiftCharacterStatistics(shiftReligionYN, newCharacterReligion)
+    elif selectedMenuOption == 'About This Program / Help':
+        aboutManager.aboutSGM()
+    elif selectedMenuOption == 'Queue New Religion':
+        selectedReligion = religionShifter.shiftCharacterReligion()
+    elif selectedMenuOption == 'Character: Update Statistics':
+        newStatistics = statisticShifter.shiftCharacterStatistics(selectedReligion)
         pyperclip.copy(newStatistics)
         infoOutput = []
         infoOutput.append('=' * 80)
@@ -29,17 +38,9 @@ def sgmMainMenu(shiftReligionYN, newCharacterReligion):
         for info in infoOutput:
             print(info.center(80))
 
-        sgmMainMenu(shiftReligionYN, newCharacterReligion)
+    sgmMainMenu(selectedReligion)
 
 def ck2sgm():
-    from sgmModules import mShifterReligion as religionShifter
-    import pyinputplus as pyip
-    shiftReligionYN = pyip.inputYesNo(' * Set/adjust character religions in this session? ')
-    if shiftReligionYN == 'yes':
-        newCharacterReligion = religionShifter.shiftCharacterReligion()
-    elif shiftReligionYN == 'no':
-        newCharacterReligion = False
-
-    sgmMainMenu(shiftReligionYN, newCharacterReligion)
+    sgmMainMenu('noChange')
 
 ck2sgm()
