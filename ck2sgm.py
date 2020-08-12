@@ -8,7 +8,7 @@ def sgmMainMenu(selectedReligion):
     import pyperclip
 
     print('\n')
-    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812c']
+    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812d']
     for info in sgmInfo:
         print(info.center(80))
 
