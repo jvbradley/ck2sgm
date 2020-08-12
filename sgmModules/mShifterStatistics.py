@@ -12,6 +12,8 @@ def generateRandomAttributes():
     return attOutput
 
 def setModificationScope(selectedReligion):
+    # Sit, Ubu, sit.  Good dog.
+
     # These are the statistics that this script will modify.
     modifyLines = ['att={', 'fer=', 'health=', 'prs=', 'piety=', 'wealth=']
 
@@ -35,7 +37,10 @@ def setModificationScope(selectedReligion):
 def shiftCharacterStatistics(selectedReligion):
     import pyinputplus as pyip
     import pyperclip
+    # Iterate a string output for the return value.
     newStatistics = str()
+
+    # Adjust fields based on whether or not religion will be changed.
     modificationScope = setModificationScope(selectedReligion)
     modifyLines = modificationScope[0]
     skipLines = modificationScope[1]
@@ -105,5 +110,5 @@ def shiftCharacterStatistics(selectedReligion):
             # This ends the logic for field adjustments.
     # End iteration of statistics.
 
-    # Drop the updated statistics into memory, readying it for pasting.
+    # Return the updated statistics.
     return newStatistics

@@ -1,5 +1,4 @@
 def shiftCharacterReligion():
-    # Sit, Ubu, sit.  Good dog.
     '''
     This script intends to facilitate adjusting the religion of NPC characters.
     It may be used in conjunction with the Statistic Shifter.

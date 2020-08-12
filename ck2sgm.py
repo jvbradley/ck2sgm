@@ -2,15 +2,13 @@
 # Crusader Kings II: Saved Game Modifier
 def sgmMainMenu(selectedReligion):
     from sgmModules import mAboutSGM as aboutManager
-    # This is a work in progress.  The aim of this script is to incorporate
-    # religions under the logic of adjusting character statistics.
     from sgmModules import mShifterStatistics as statisticShifter
     from sgmModules import mShifterReligion as religionShifter
     import pyinputplus as pyip
     import pyperclip
 
     print('\n')
-    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812a']
+    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812b']
     for info in sgmInfo:
         print(info.center(80))
 
