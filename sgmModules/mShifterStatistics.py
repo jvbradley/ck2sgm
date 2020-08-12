@@ -63,7 +63,11 @@ def shiftCharacterStatistics(selectedReligion):
             elif modifier not in attributeInputByLine[line]:
                 attributeLocations.setdefault(modifier, False)
     for attributeKey, attributeValue in attributeLocations.items():
-        if attributeKey == 'prs=' and attributeValue == False:
+        if attributeKey == 'rel=' and selectedReligion != 'noChange':
+            attributeInputByLine.insert(2, '\t\t\trel="' + selectedReligion + '"')
+
+        elif attributeKey == 'prs=' and attributeValue == False:
+        # if attributeKey == 'prs=' and attributeValue == False:
             attributeInputByLine.insert(attributeLocations['health='] + 1, '\t\t\tprs=1.000\n')
         elif attributeKey == 'piety=' and attributeValue == False and attributeLocations['wealth='] != False:
             attributeInputByLine.insert(attributeLocations['health='] + 2, '\t\t\tpiety=1.000\n')
@@ -87,6 +91,8 @@ def shiftCharacterStatistics(selectedReligion):
                 if modifier == 'att={':
                     newStatistics = str(generateRandomAttributes()) + '\n'
                 elif modifier == 'rel=':
+                    print('LINE 90!!!!!!!!!!!!')
+                    print('\t\t\trel="' + selectedReligion + '"\n')
                     newStatistics += '\t\t\trel="' + selectedReligion + '"\n'
                 elif modifier == 'fer=':
                     newStatistics += '\t\t\tfer=1.500\n'
