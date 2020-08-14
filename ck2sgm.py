@@ -8,14 +8,14 @@ def sgmMainMenu(selectedReligion):
     import pyperclip
 
     print('\n')
-    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200812d']
+    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.0.20200814a']
     for info in sgmInfo:
         print(info.center(80))
 
     if selectedReligion != 'noChange':
-        menuList = ['Character: Update Statistics', 'Queue New Religion (Current: ' + selectedReligion + ')', 'About This Program / Help', 'Exit']
+        menuList = ['Character: Update Statistics', 'Clear Selected Religion ("' + selectedReligion + '")', 'About This Program / Help', 'Exit']
     else:
-        menuList = ['Character: Update Statistics', 'Queue New Religion', 'About This Program / Help', 'Exit']
+        menuList = ['Character: Update Statistics', 'Select New Religion', 'About This Program / Help', 'Exit']
     print('\n')
     selectedMenuOption = pyip.inputMenu(menuList, numbered = True, lettered = False)
     if selectedMenuOption == 'Exit':
@@ -23,8 +23,10 @@ def sgmMainMenu(selectedReligion):
         exit()
     elif selectedMenuOption == 'About This Program / Help':
         aboutManager.aboutSGM()
-    elif selectedMenuOption[0:18] == 'Queue New Religion':
+    elif selectedMenuOption == 'Select New Religion':
         selectedReligion = religionShifter.shiftCharacterReligion()
+    elif selectedMenuOption == 'Clear Selected Religion ("' + selectedReligion + '")':
+        selectedReligion = 'noChange'
     elif selectedMenuOption == 'Character: Update Statistics':
         newStatistics = statisticShifter.shiftCharacterStatistics(selectedReligion)
         pyperclip.copy(newStatistics)
