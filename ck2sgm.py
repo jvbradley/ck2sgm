@@ -9,7 +9,7 @@ def sgmMainMenu(selectedReligion):
     import pyperclip
 
     print('\n')
-    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.1.20200816a']
+    sgmInfo = ['HalfElf.net', 'Crusader Kings II: Saved Game Modifer', 'Version 2.1.20200816b']
     for info in sgmInfo:
         print(info.center(80))
 
@@ -31,8 +31,6 @@ def sgmMainMenu(selectedReligion):
     elif selectedMenuOption == 'Character: Update Statistics':
         newStatistics = statisticShifter.shiftCharacterStatistics(selectedReligion)
         pyperclip.copy(newStatistics)
-        for info in infoOutput:
-            print(info.center(80))
     elif selectedMenuOption == 'Update Army Unit':
         # strNUI = string, new unit info
         strNUI = unitBooster.boostUnitNumbers()

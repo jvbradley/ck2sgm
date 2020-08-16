@@ -1,0 +1,1 @@
+erase C:\Users\jvbradley\myCode\ck2sgm\ck2sgm\sgmModules\__pycache__\*.pyc

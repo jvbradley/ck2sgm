@@ -1,19 +1,3 @@
-def bootCamp(troopSection):
-    '''
-    This module only builds units of each type composed of 20,000 soldiers
-    each.  I'll customize the inputs at a later time.
-    '''
-    tabFive = '\t' * 5
-    tabSix = '\t' * 6
-    tabSeven = '\t' * 7
-    newRecruits = [tabSix + '{']
-    for newTroops in troopSection:
-        newRecruits.append(tabSeven + newTroops + '20000.000')
-
-    newRecruits.append(tabSix + '}')
-    newRecruits.append(tabFive + '}')
-    return newRecruits
-
 def boostUnitNumbers():
     '''
     This script updates army units.  It operates on information from the
@@ -29,6 +13,7 @@ def boostUnitNumbers():
     'location=' field or another 'sub_unit=' field immediately following.
     '''
     tabSix = '\t' * 6
+    tabSeven = '\t' * 7
     import pyperclip, pprint
     # These are the statistics that this script will modify.
     troopSection = ['li=', 'hi=', 'pi=', 'lc=', 'hc=', 'ar=', 'horse_archers=']
@@ -38,23 +23,24 @@ def boostUnitNumbers():
     'owner=', 'date=', 'troops=', 'morale=']
     unitInfo = pyperclip.paste()
     unitInfoByLine = unitInfo.split('\n')
-    newUnitInfo = []
 
-    for thisLine in unitInfoByLine:
-        if 'morale=' in thisLine:
-            newUnitInfo.append(tabSix + 'morale=1.000')
-        elif 'troops=' in thisLine:
-            print(' * I don\'t know what I\'ve been told ...')
-            newRecruits = bootCamp(troopSection)
-            for newUnit in newRecruits:
-                newUnitInfo.append(newUnit)
-            break
-        else:
-            newUnitInfo.append(thisLine)
+    for lineIndex in range(len(unitInfoByLine)):
+        for unitCheck in troopSection:
+            if unitCheck in unitInfoByLine[lineIndex]:
+                unitInfoByLine.pop(lineIndex)
+                newTroopCount = tabSeven + unitCheck + '{20000.000 20000.000}'
+                unitInfoByLine.insert(lineIndex, newTroopCount)
+            elif unitCheck in unitInfoByLine[lineIndex]:
+                unitInfoByLine.pop(lineIndex)
+                newTroopCount = tabSeven + unitCheck + '20000.000'
+                unitInfoByLine.insert(lineIndex, newTroopCount)
+
+        if 'morale=' in unitInfoByLine[lineIndex]:
+            unitInfoByLine[lineIndex] = tabSix + 'morale=1.000'
 
     # String: new unit information will be returned
     strNUI = str()
-    for lineItem in newUnitInfo:
+    for lineItem in unitInfoByLine:
         strNUI += lineItem + '\n'
 
     strNUI = strNUI[0:-1]
